@@ -13,10 +13,10 @@ servers:
 tags:
   - name: Authorization
     description: OAuth 2.0 authorization for customer data access.
-  - name: Usage
-    description: Retrieve energy usage interval data.
   - name: Subscriptions
     description: Manage data subscriptions for customer accounts.
+  - name: Usage
+    description: Retrieve energy usage interval data.
 paths:
   /GreenButtonConnect/espi/1_1/resource/Authorization:
     get:
@@ -86,8 +86,8 @@ paths:
       responses:
         '200':
           description: Success
-  /GreenButtonConnect/espi/1_1/resource/Subscription/{subscriptionId}/UsagePoint/{usagePointId}/MeterReading/{meterReadingId}/IntervalBlock:
-    get:
+  ? /GreenButtonConnect/espi/1_1/resource/Subscription/{subscriptionId}/UsagePoint/{usagePointId}/MeterReading/{meterReadingId}/IntervalBlock
+  : get:
       operationId: listIntervalBlocks
       summary: List interval blocks
       description: >-
