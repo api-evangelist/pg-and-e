@@ -4,79 +4,43 @@ schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main
 provider: pg-and-e
 providerId: pg-and-e
 created: '2026-05-04'
-modified: '2026-05-04'
+modified: '2026-05-05'
+reconciled: false
 tags:
   - Rate Limiting
-  - Quotas
-  - Throttling
-description: Machine-readable rate limit definitions for the pg-and-e API surface. Captures per-tier quotas,
-  burst behavior, response signaling, and recovery semantics. Defaults are scaffold values to be replaced
-  with published provider limits.
-headers:
-  limit: X-RateLimit-Limit
-  remaining: X-RateLimit-Remaining
-  reset: X-RateLimit-Reset
-  retryAfter: Retry-After
-  policy: RateLimit-Policy
+  - Energy
+  - Utilities
+  - Share My Data
+  - Green Button
+notes: PG&E does not publish numeric rate limits for its Share My Data API on a public developer
+  documentation site. Limits, polling cadence, and quota are defined per third-party registration
+  in coordination with PG&E and constrained by the Green Button / CMD specification.
+description: PG&E's Share My Data API follows the Green Button / Connect My Data standard. Throttling
+  and quota are managed via the third-party registration relationship rather than published
+  numeric per-key limits. Standard 429 / 503 responses apply on throttling; consumers should
+  follow Green Button best practices for batched daily / hourly retrieval rather than
+  high-frequency polling.
+sources:
+  - https://www.pge.com/en/partners-and-suppliers/data-requests-research-and-academics/share-my-data.html
+  - https://sharemydata.pge.com/
 responseCodes:
   throttled: 429
-  quotaExceeded: 429
   serviceUnavailable: 503
 limits:
-  - tier: free
-    name: Free Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 10
-    burst: 20
-    timeFrame: minute
-    applies:
-      - PG&E Share My Data API
-  - tier: free
-    name: Free Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 1000
-    timeFrame: month
-    applies:
-      - PG&E Share My Data API
-  - tier: professional
-    name: Professional Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 100
-    burst: 200
-    timeFrame: minute
-    applies:
-      - PG&E Share My Data API
-  - tier: professional
-    name: Professional Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 100000
-    timeFrame: month
-    applies:
-      - PG&E Share My Data API
-  - tier: enterprise
-    name: Enterprise Negotiated Limit
-    scope: contract
-    metric: requests_per_minute
-    limit: 1000
-    burst: 5000
-    timeFrame: minute
-    applies:
-      - PG&E Share My Data API
+  - name: Share My Data API
+    scope: third-party registration
+    metric: varies
+    limit: 'governed by third-party agreement; not publicly documented'
+    notes: Daily / hourly batch retrieval is the normal pattern; high-frequency polling is not
+      expected.
 policies:
-  - name: Backoff Strategy
-    description: Clients should implement exponential backoff with jitter, honoring the Retry-After header
-      when present.
-  - name: Burst Handling
-    description: Short bursts above the steady-state limit are tolerated up to the documented burst ceiling
-      before throttling engages.
-  - name: Quota Reset
-    description: Monthly quotas reset at the start of each calendar month in UTC. Per-minute and per-second
-      windows reset on a sliding-window basis.
-  - name: Fair Use
-    description: Even on uncapped enterprise tiers, sustained usage that materially impacts shared infrastructure
-      may be subject to fair-use throttling.
+  - name: Green Button / CMD Conformance
+    description: Clients should follow the Green Button Connect My Data conformance requirements
+      for usage retrieval (typically daily or hourly batch).
+  - name: Customer Authorization Lifecycle
+    description: Each customer's authorization is time-limited; clients must handle revocation and
+      re-authorization rather than retrying.
+  - name: Backoff
+    description: On 429 / 503, retry with exponential backoff and jitter; do not exceed normal
+      Green Button retrieval cadence.
 maintainers: []
