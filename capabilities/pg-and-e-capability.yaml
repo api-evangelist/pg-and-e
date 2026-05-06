@@ -1,0 +1,272 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PG&E Share My Data API
+  description: The PG&E Share My Data API provides customer-authorized access to energy usage data following the Energy Service
+    Provider Interface (ESPI) standard and Green Button Connect My Data specification. Third-party companies can access interval
+    data for both electricity and gas usage through RESTful web services with OAuth 2.0 authorization.
+  tags:
+  - Pg
+  - And
+  - E
+  - API
+  created: '2026-05-06'
+  modified: '2026-05-06'
+capability:
+  consumes:
+  - type: http
+    namespace: pg-and-e
+    baseUri: https://api.pge.com
+    description: PG&E Share My Data API HTTP API.
+    authentication:
+      type: bearer
+      token: '{{PG_AND_E_TOKEN}}'
+    resources:
+    - name: greenbuttonconnect-espi-1-1-resource-authorizati
+      path: /GreenButtonConnect/espi/1_1/resource/Authorization
+      operations:
+      - name: listauthorizations
+        method: GET
+        description: List authorizations
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: greenbuttonconnect-espi-1-1-resource-subscriptio
+      path: /GreenButtonConnect/espi/1_1/resource/Subscription
+      operations:
+      - name: listsubscriptions
+        method: GET
+        description: List subscriptions
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: greenbuttonconnect-espi-1-1-resource-subscriptio
+      path: /GreenButtonConnect/espi/1_1/resource/Subscription/{subscriptionId}/UsagePoint
+      operations:
+      - name: listusagepoints
+        method: GET
+        description: List usage points
+        inputParameters:
+        - name: subscriptionId
+          in: path
+          type: string
+          required: true
+          description: The subscription identifier.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: greenbuttonconnect-espi-1-1-resource-subscriptio
+      path: /GreenButtonConnect/espi/1_1/resource/Subscription/{subscriptionId}/UsagePoint/{usagePointId}/MeterReading
+      operations:
+      - name: listmeterreadings
+        method: GET
+        description: List meter readings
+        inputParameters:
+        - name: subscriptionId
+          in: path
+          type: string
+          required: true
+          description: The subscription identifier.
+        - name: usagePointId
+          in: path
+          type: string
+          required: true
+          description: The usage point identifier.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: greenbuttonconnect-espi-1-1-resource-subscriptio
+      path: /GreenButtonConnect/espi/1_1/resource/Subscription/{subscriptionId}/UsagePoint/{usagePointId}/MeterReading/{meterReadingId}/IntervalBlock
+      operations:
+      - name: listintervalblocks
+        method: GET
+        description: List interval blocks
+        inputParameters:
+        - name: subscriptionId
+          in: path
+          type: string
+          required: true
+          description: The subscription identifier.
+        - name: usagePointId
+          in: path
+          type: string
+          required: true
+          description: The usage point identifier.
+        - name: meterReadingId
+          in: path
+          type: string
+          required: true
+          description: The meter reading identifier.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+  exposes:
+  - type: rest
+    port: 8080
+    namespace: pg-and-e-rest
+    description: REST adapter for PG&E Share My Data API.
+    resources:
+    - path: /GreenButtonConnect/espi/1_1/resource/Authorization
+      name: listauthorizations
+      operations:
+      - method: GET
+        name: listauthorizations
+        description: List authorizations
+        call: pg-and-e.listauthorizations
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /GreenButtonConnect/espi/1_1/resource/Subscription
+      name: listsubscriptions
+      operations:
+      - method: GET
+        name: listsubscriptions
+        description: List subscriptions
+        call: pg-and-e.listsubscriptions
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /GreenButtonConnect/espi/1_1/resource/Subscription/{subscriptionId}/UsagePoint
+      name: listusagepoints
+      operations:
+      - method: GET
+        name: listusagepoints
+        description: List usage points
+        call: pg-and-e.listusagepoints
+        with:
+          subscriptionId: rest.subscriptionId
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /GreenButtonConnect/espi/1_1/resource/Subscription/{subscriptionId}/UsagePoint/{usagePointId}/MeterReading
+      name: listmeterreadings
+      operations:
+      - method: GET
+        name: listmeterreadings
+        description: List meter readings
+        call: pg-and-e.listmeterreadings
+        with:
+          subscriptionId: rest.subscriptionId
+          usagePointId: rest.usagePointId
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /GreenButtonConnect/espi/1_1/resource/Subscription/{subscriptionId}/UsagePoint/{usagePointId}/MeterReading/{meterReadingId}/IntervalBlock
+      name: listintervalblocks
+      operations:
+      - method: GET
+        name: listintervalblocks
+        description: List interval blocks
+        call: pg-and-e.listintervalblocks
+        with:
+          subscriptionId: rest.subscriptionId
+          usagePointId: rest.usagePointId
+          meterReadingId: rest.meterReadingId
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    port: 9090
+    namespace: pg-and-e-mcp
+    transport: http
+    description: MCP adapter for PG&E Share My Data API for AI agent use.
+    tools:
+    - name: listauthorizations
+      description: List authorizations
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: pg-and-e.listauthorizations
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: listsubscriptions
+      description: List subscriptions
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: pg-and-e.listsubscriptions
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: listusagepoints
+      description: List usage points
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: pg-and-e.listusagepoints
+      with:
+        subscriptionId: tools.subscriptionId
+      inputParameters:
+      - name: subscriptionId
+        type: string
+        description: The subscription identifier.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: listmeterreadings
+      description: List meter readings
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: pg-and-e.listmeterreadings
+      with:
+        subscriptionId: tools.subscriptionId
+        usagePointId: tools.usagePointId
+      inputParameters:
+      - name: subscriptionId
+        type: string
+        description: The subscription identifier.
+        required: true
+      - name: usagePointId
+        type: string
+        description: The usage point identifier.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: listintervalblocks
+      description: List interval blocks
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: pg-and-e.listintervalblocks
+      with:
+        subscriptionId: tools.subscriptionId
+        usagePointId: tools.usagePointId
+        meterReadingId: tools.meterReadingId
+      inputParameters:
+      - name: subscriptionId
+        type: string
+        description: The subscription identifier.
+        required: true
+      - name: usagePointId
+        type: string
+        description: The usage point identifier.
+        required: true
+      - name: meterReadingId
+        type: string
+        description: The meter reading identifier.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+binds:
+- namespace: env
+  keys:
+    PG_AND_E_TOKEN: PG_AND_E_TOKEN
