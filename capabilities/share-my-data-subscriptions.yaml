@@ -1,0 +1,70 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PG&E Share My Data API — Subscriptions
+  description: 'PG&E Share My Data API — Subscriptions. 1 operations. Lead operation: List subscriptions. Self-contained Naftiko
+    capability covering one Pg And E business surface.'
+  tags:
+  - Pg And E
+  - Subscriptions
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    PG_AND_E_API_KEY: PG_AND_E_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: share-my-data-subscriptions
+    baseUri: https://api.pge.com
+    description: PG&E Share My Data API — Subscriptions business capability. Self-contained, no shared references.
+    resources:
+    - name: GreenButtonConnect-espi-1_1-resource-Subscription
+      path: /GreenButtonConnect/espi/1_1/resource/Subscription
+      operations:
+      - name: listsubscriptions
+        method: GET
+        description: List subscriptions
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: bearer
+      token: '{{env.PG_AND_E_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: share-my-data-subscriptions-rest
+    port: 8080
+    description: REST adapter for PG&E Share My Data API — Subscriptions. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/greenbuttonconnect/espi/1-1/resource/subscription
+      name: greenbuttonconnect-espi-1-1-resource-subscription
+      description: REST surface for GreenButtonConnect-espi-1_1-resource-Subscription.
+      operations:
+      - method: GET
+        name: listsubscriptions
+        description: List subscriptions
+        call: share-my-data-subscriptions.listsubscriptions
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: share-my-data-subscriptions-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PG&E Share My Data API — Subscriptions. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: list-subscriptions
+      description: List subscriptions
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: share-my-data-subscriptions.listsubscriptions
+      outputParameters:
+      - type: object
+        mapping: $.
