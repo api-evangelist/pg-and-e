@@ -1,0 +1,131 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "PG&E Share My Data API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Authorization",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List authorizations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.pge.com/GreenButtonConnect/espi/1_1/resource/Authorization"
+          },
+          "docs": "Retrieves a list of active customer authorizations granting access to energy usage data for the authenticated third-party application."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Subscriptions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List subscriptions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.pge.com/GreenButtonConnect/espi/1_1/resource/Subscription"
+          },
+          "docs": "Retrieves a list of data subscriptions for authorized customer accounts with subscription status and details."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Usage",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List usage points",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.pge.com/GreenButtonConnect/espi/1_1/resource/Subscription/:subscriptionId/UsagePoint",
+            "params": [
+              {
+                "name": "subscriptionId",
+                "value": "",
+                "type": "path",
+                "description": "The subscription identifier."
+              }
+            ]
+          },
+          "docs": "Retrieves usage points for a specified subscription, representing metering points for electricity or gas service."
+        },
+        {
+          "info": {
+            "name": "List meter readings",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.pge.com/GreenButtonConnect/espi/1_1/resource/Subscription/:subscriptionId/UsagePoint/:usagePointId/MeterReading",
+            "params": [
+              {
+                "name": "subscriptionId",
+                "value": "",
+                "type": "path",
+                "description": "The subscription identifier."
+              },
+              {
+                "name": "usagePointId",
+                "value": "",
+                "type": "path",
+                "description": "The usage point identifier."
+              }
+            ]
+          },
+          "docs": "Retrieves meter reading data for a specified usage point, containing interval usage data for electricity or gas."
+        },
+        {
+          "info": {
+            "name": "List interval blocks",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.pge.com/GreenButtonConnect/espi/1_1/resource/Subscription/:subscriptionId/UsagePoint/:usagePointId/MeterReading/:meterReadingId/IntervalBlock",
+            "params": [
+              {
+                "name": "subscriptionId",
+                "value": "",
+                "type": "path",
+                "description": "The subscription identifier."
+              },
+              {
+                "name": "usagePointId",
+                "value": "",
+                "type": "path",
+                "description": "The usage point identifier."
+              },
+              {
+                "name": "meterReadingId",
+                "value": "",
+                "type": "path",
+                "description": "The meter reading identifier."
+              }
+            ]
+          },
+          "docs": "Retrieves interval block data containing detailed energy consumption measurements at regular time intervals."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
