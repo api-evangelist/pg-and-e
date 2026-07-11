@@ -1,0 +1,18 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/pg-and-e-share-my-data-api-openapi.yml
+summary:
+  types:
+  - oauth2
+  oauth2_flows:
+  - authorizationCode
+schemes:
+- name: oauth2
+  type: oauth2
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://api.pge.com/datacustodian/oauth/v2/authorize
+    tokenUrl: https://api.pge.com/datacustodian/oauth/v2/token
+    scopes: 1
+  sources:
+  - openapi/pg-and-e-share-my-data-api-openapi.yml

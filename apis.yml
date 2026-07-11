@@ -22,6 +22,8 @@ apis:
       Provider Interface (ESPI) standard and Green Button Connect My Data specification. Third-party companies can
       access interval data for both electricity and gas usage through RESTful web services with OAuth 2.0 authorization.
 common:
+  - type: DomainSecurity
+    url: security/pg-and-e-domain-security.yml
   - type: Authentication
     url: authentication/pg-and-e-authentication.yml
   - type: OAuthScopes
