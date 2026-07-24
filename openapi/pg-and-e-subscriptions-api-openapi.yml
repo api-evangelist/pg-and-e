@@ -1,0 +1,31 @@
+openapi: 3.1.0
+info:
+  title: PG&E Share My Data Authorization Subscriptions API
+  description: The PG&E Share My Data API provides customer-authorized access to energy usage data following the Energy Service Provider Interface (ESPI) standard and Green Button Connect My Data specification. Third-party companies can access interval data for both electricity and gas usage through RESTful web services with OAuth 2.0 authorization.
+  version: '1.0'
+servers:
+- url: https://api.pge.com
+tags:
+- name: Subscriptions
+  description: Manage data subscriptions for customer accounts.
+paths:
+  /GreenButtonConnect/espi/1_1/resource/Subscription:
+    get:
+      operationId: listSubscriptions
+      summary: List subscriptions
+      description: Retrieves a list of data subscriptions for authorized customer accounts with subscription status and details.
+      tags:
+      - Subscriptions
+      responses:
+        '200':
+          description: Success
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://api.pge.com/datacustodian/oauth/v2/authorize
+          tokenUrl: https://api.pge.com/datacustodian/oauth/v2/token
+          scopes:
+            usage:read: Read energy usage data
