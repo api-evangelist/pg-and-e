@@ -1,26 +1,63 @@
 aid: pg-and-e
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/pg-and-e.png
 url: https://raw.githubusercontent.com/api-evangelist/pg-and-e/refs/heads/main/apis.yml
 modified: '2026-05-19'
 apis:
-  - aid: pg-and-e:share-my-data-api
-    name: PG&E Share My Data API
-    tags:
-      - Energy
-      - Utilities
-      - Smart Meters
-      - Green Button
-    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-    baseURL: https://api.pge.com
-    humanURL: https://www.pge.com/en/save-energy-and-money/energy-usage-and-tips/understand-my-usage/share-my-data.html
-    properties:
-      - url: https://www.pge.com/en/save-energy-and-money/energy-usage-and-tips/understand-my-usage/share-my-data.html
-        type: Documentation
-      - url: openapi/pg-and-e-share-my-data-api-openapi.yml
-        type: OpenAPI
-    description: >-
-      The PG&E Share My Data API provides customer-authorized access to energy usage data following the Energy Service
-      Provider Interface (ESPI) standard and Green Button Connect My Data specification. Third-party companies can
-      access interval data for both electricity and gas usage through RESTful web services with OAuth 2.0 authorization.
+- aid: pg-and-e:pg-and-e-authorization-api
+  name: pg-and-e Authorization API
+  description: OAuth 2.0 authorization for customer data access.
+  humanURL: >-
+    https://www.pge.com/en/save-energy-and-money/energy-usage-and-tips/understand-my-usage/share-my-data.html
+  baseURL: https://api.pge.com
+  tags:
+  - Authorization
+  properties:
+  - type: OpenAPI
+    url: openapi/pg-and-e-authorization-api-openapi.yml
+  - type: Documentation
+    url: >-
+      https://www.pge.com/en/save-energy-and-money/energy-usage-and-tips/understand-my-usage/share-my-data.html
+- aid: pg-and-e:pg-and-e-subscriptions-api
+  name: pg-and-e Subscriptions API
+  description: Manage data subscriptions for customer accounts.
+  humanURL: >-
+    https://www.pge.com/en/save-energy-and-money/energy-usage-and-tips/understand-my-usage/share-my-data.html
+  baseURL: https://api.pge.com
+  tags:
+  - Subscriptions
+  properties:
+  - type: OpenAPI
+    url: openapi/pg-and-e-subscriptions-api-openapi.yml
+  - type: Documentation
+    url: >-
+      https://www.pge.com/en/save-energy-and-money/energy-usage-and-tips/understand-my-usage/share-my-data.html
+- aid: pg-and-e:pg-and-e-usage-api
+  name: pg-and-e Usage API
+  description: Retrieve energy usage interval data.
+  humanURL: >-
+    https://www.pge.com/en/save-energy-and-money/energy-usage-and-tips/understand-my-usage/share-my-data.html
+  baseURL: https://api.pge.com
+  tags:
+  - Usage
+  properties:
+  - type: OpenAPI
+    url: openapi/pg-and-e-usage-api-openapi.yml
+  - type: Documentation
+    url: >-
+      https://www.pge.com/en/save-energy-and-money/energy-usage-and-tips/understand-my-usage/share-my-data.html
 common:
   - type: AgenticAccess
     url: agentic-access/pg-and-e-agentic-access.yml
