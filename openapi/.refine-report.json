@@ -1,0 +1,18 @@
+{
+  "provider": "pg-and-e",
+  "sources": [
+    "pg-and-e-authorization-api-openapi.yml",
+    "pg-and-e-subscriptions-api-openapi.yml",
+    "pg-and-e-usage-api-openapi.yml"
+  ],
+  "outputs": [
+    "pg-and-e-authorization-api-openapi.yml",
+    "pg-and-e-subscriptions-api-openapi.yml",
+    "pg-and-e-usage-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
