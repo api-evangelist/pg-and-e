@@ -1,0 +1,98 @@
+{
+  "item": [
+    {
+      "id": "748848d8-615e-4671-9cf7-ed2474cab3f2",
+      "name": "Subscriptions",
+      "description": {
+        "content": "Manage data subscriptions for customer accounts.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "506e4316-ea32-42a3-95c5-196b0826758a",
+          "name": "List subscriptions",
+          "request": {
+            "name": "List subscriptions",
+            "description": {
+              "content": "Retrieves a list of data subscriptions for authorized customer accounts with subscription status and details.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "GreenButtonConnect",
+                "espi",
+                "1_1",
+                "resource",
+                "Subscription"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "c3be94a1-5b9d-485b-8a87-37a7f0f80593",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "GreenButtonConnect",
+                    "espi",
+                    "1_1",
+                    "resource",
+                    "Subscription"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.pge.com",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "3080114c-922e-4645-a1ce-bb2f17ff879f",
+    "name": "PG&E Share My Data Authorization Subscriptions API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The PG&E Share My Data API provides customer-authorized access to energy usage data following the Energy Service Provider Interface (ESPI) standard and Green Button Connect My Data specification. Third-party companies can access interval data for both electricity and gas usage through RESTful web services with OAuth 2.0 authorization.",
+      "type": "text/plain"
+    }
+  }
+}

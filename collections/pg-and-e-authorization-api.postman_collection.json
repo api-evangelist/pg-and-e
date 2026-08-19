@@ -1,0 +1,98 @@
+{
+  "item": [
+    {
+      "id": "68634633-ed78-4cd0-860b-c565782ac888",
+      "name": "Authorization",
+      "description": {
+        "content": "OAuth 2.0 authorization for customer data access.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "962a421d-d345-407e-aed4-e38120fd4c9f",
+          "name": "List authorizations",
+          "request": {
+            "name": "List authorizations",
+            "description": {
+              "content": "Retrieves a list of active customer authorizations granting access to energy usage data for the authenticated third-party application.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "GreenButtonConnect",
+                "espi",
+                "1_1",
+                "resource",
+                "Authorization"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "3314e096-eb97-44cd-bbae-0abb9c8ca2ee",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "GreenButtonConnect",
+                    "espi",
+                    "1_1",
+                    "resource",
+                    "Authorization"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.pge.com",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "8bb7b49d-53c9-48cd-9808-b705eba3eda0",
+    "name": "PG&E Share My Data Authorization API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The PG&E Share My Data API provides customer-authorized access to energy usage data following the Energy Service Provider Interface (ESPI) standard and Green Button Connect My Data specification. Third-party companies can access interval data for both electricity and gas usage through RESTful web services with OAuth 2.0 authorization.",
+      "type": "text/plain"
+    }
+  }
+}

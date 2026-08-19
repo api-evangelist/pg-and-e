@@ -1,0 +1,344 @@
+{
+  "item": [
+    {
+      "id": "91758075-17e2-4f1f-a23b-a364569d43b1",
+      "name": "Usage",
+      "description": {
+        "content": "Retrieve energy usage interval data.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "d86220de-dcde-4358-b04f-61aec126a20b",
+          "name": "List usage points",
+          "request": {
+            "name": "List usage points",
+            "description": {
+              "content": "Retrieves usage points for a specified subscription, representing metering points for electricity or gas service.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "GreenButtonConnect",
+                "espi",
+                "1_1",
+                "resource",
+                "Subscription",
+                ":subscriptionId",
+                "UsagePoint"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "subscriptionId",
+                  "description": "(Required) The subscription identifier."
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "556824ba-33dd-4a28-af84-d75aa3d0ae80",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "GreenButtonConnect",
+                    "espi",
+                    "1_1",
+                    "resource",
+                    "Subscription",
+                    ":subscriptionId",
+                    "UsagePoint"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "subscriptionId",
+                      "description": "(Required) The subscription identifier."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9da94eda-a7c2-4171-a47a-f49b9cc67b06",
+          "name": "List meter readings",
+          "request": {
+            "name": "List meter readings",
+            "description": {
+              "content": "Retrieves meter reading data for a specified usage point, containing interval usage data for electricity or gas.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "GreenButtonConnect",
+                "espi",
+                "1_1",
+                "resource",
+                "Subscription",
+                ":subscriptionId",
+                "UsagePoint",
+                ":usagePointId",
+                "MeterReading"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "subscriptionId",
+                  "description": "(Required) The subscription identifier."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "usagePointId",
+                  "description": "(Required) The usage point identifier."
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "9965761f-a6db-432c-86ab-10087a95899d",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "GreenButtonConnect",
+                    "espi",
+                    "1_1",
+                    "resource",
+                    "Subscription",
+                    ":subscriptionId",
+                    "UsagePoint",
+                    ":usagePointId",
+                    "MeterReading"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "subscriptionId",
+                      "description": "(Required) The subscription identifier."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "usagePointId",
+                      "description": "(Required) The usage point identifier."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "268204da-5086-468c-93dc-534db6abccea",
+          "name": "List interval blocks",
+          "request": {
+            "name": "List interval blocks",
+            "description": {
+              "content": "Retrieves interval block data containing detailed energy consumption measurements at regular time intervals.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "GreenButtonConnect",
+                "espi",
+                "1_1",
+                "resource",
+                "Subscription",
+                ":subscriptionId",
+                "UsagePoint",
+                ":usagePointId",
+                "MeterReading",
+                ":meterReadingId",
+                "IntervalBlock"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "subscriptionId",
+                  "description": "(Required) The subscription identifier."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "usagePointId",
+                  "description": "(Required) The usage point identifier."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "meterReadingId",
+                  "description": "(Required) The meter reading identifier."
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "937379e6-ab7a-4517-9b49-2cc567b07f83",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "GreenButtonConnect",
+                    "espi",
+                    "1_1",
+                    "resource",
+                    "Subscription",
+                    ":subscriptionId",
+                    "UsagePoint",
+                    ":usagePointId",
+                    "MeterReading",
+                    ":meterReadingId",
+                    "IntervalBlock"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "subscriptionId",
+                      "description": "(Required) The subscription identifier."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "usagePointId",
+                      "description": "(Required) The usage point identifier."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "meterReadingId",
+                      "description": "(Required) The meter reading identifier."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.pge.com",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "ae69c6e9-bd9c-4ce2-a8fc-e03358438981",
+    "name": "PG&E Share My Data Authorization Usage API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The PG&E Share My Data API provides customer-authorized access to energy usage data following the Energy Service Provider Interface (ESPI) standard and Green Button Connect My Data specification. Third-party companies can access interval data for both electricity and gas usage through RESTful web services with OAuth 2.0 authorization.",
+      "type": "text/plain"
+    }
+  }
+}
