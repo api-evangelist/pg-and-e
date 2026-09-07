@@ -13,6 +13,11 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
+  "notes": [
+    "pg-and-e-authorization-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "pg-and-e-subscriptions-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "pg-and-e-usage-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
   "skipped": []
 }
