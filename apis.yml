@@ -12,6 +12,24 @@ deliveryModel:
   generated: '2026-08-28'
   method: derived
 specificationVersion: '0.23'
+kind: company
+created: '2026-05-04'
+tags:
+  - Energy
+  - Utilities
+  - Electricity
+  - Natural Gas
+  - California
+  - United States
+  - Smart Metering
+  - Green Button
+  - ESPI
+  - Energy Usage Data
+  - Investor-Owned Utility
+  - Customer Data Access
+maintainers:
+  - FN: API Evangelist
+    email: info@apievangelist.com
 accessModel:
   pricing: unknown
   onboarding: self-serve
@@ -27,7 +45,7 @@ accessModel:
   method: derived
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/pg-and-e.png
 url: https://raw.githubusercontent.com/api-evangelist/pg-and-e/refs/heads/main/apis.yml
-modified: '2026-05-19'
+modified: '2026-09-17'
 apis:
 - aid: pg-and-e:pg-and-e-authorization-api
   name: pg-and-e Authorization API
@@ -40,9 +58,18 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/pg-and-e-authorization-api-openapi.yml
+  - type: Overlay
+    url: overlays/pg-and-e-authorization-api-overlay.yaml
   - type: Documentation
     url: >-
-      https://www.pge.com/en/save-energy-and-money/energy-usage-and-tips/understand-my-usage/share-my-data.html
+      https://www.pge.com/en/save-energy-and-money/energy-saving-programs/smartmeter/third-party-companies.html
+  - type: APIReference
+    url: >-
+      https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/Supported-APIs.pdf
+  - type: Authentication
+    url: authentication/pg-and-e-authentication.yml
+  - type: OAuthScopes
+    url: scopes/pg-and-e-scopes.yml
 - aid: pg-and-e:pg-and-e-subscriptions-api
   name: pg-and-e Subscriptions API
   description: Manage data subscriptions for customer accounts.
@@ -56,9 +83,18 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/pg-and-e-subscriptions-api-openapi.yml
+  - type: Overlay
+    url: overlays/pg-and-e-subscriptions-api-overlay.yaml
   - type: Documentation
     url: >-
-      https://www.pge.com/en/save-energy-and-money/energy-usage-and-tips/understand-my-usage/share-my-data.html
+      https://www.pge.com/en/save-energy-and-money/energy-saving-programs/smartmeter/third-party-companies.html
+  - type: APIReference
+    url: >-
+      https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/Supported-APIs.pdf
+  - type: Authentication
+    url: authentication/pg-and-e-authentication.yml
+  - type: OAuthScopes
+    url: scopes/pg-and-e-scopes.yml
 - aid: pg-and-e:pg-and-e-usage-api
   name: pg-and-e Usage API
   description: Retrieve energy usage interval data.
@@ -70,9 +106,18 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/pg-and-e-usage-api-openapi.yml
+  - type: Overlay
+    url: overlays/pg-and-e-usage-api-overlay.yaml
   - type: Documentation
     url: >-
-      https://www.pge.com/en/save-energy-and-money/energy-usage-and-tips/understand-my-usage/share-my-data.html
+      https://www.pge.com/en/save-energy-and-money/energy-saving-programs/smartmeter/third-party-companies.html
+  - type: APIReference
+    url: >-
+      https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/Supported-APIs.pdf
+  - type: Authentication
+    url: authentication/pg-and-e-authentication.yml
+  - type: OAuthScopes
+    url: scopes/pg-and-e-scopes.yml
 common:
   - type: AgenticAccess
     url: agentic-access/pg-and-e-agentic-access.yml
@@ -82,16 +127,84 @@ common:
     url: authentication/pg-and-e-authentication.yml
   - type: OAuthScopes
     url: scopes/pg-and-e-scopes.yml
+  - type: Website
+    url: https://www.pge.com/
+  - type: DeveloperPortal
+    url: >-
+      https://www.pge.com/en/save-energy-and-money/energy-saving-programs/smartmeter/third-party-companies.html
+  - type: Documentation
+    url: >-
+      https://www.pge.com/en/save-energy-and-money/energy-saving-programs/smartmeter/third-party-companies.html
+  - type: APIReference
+    url: >-
+      https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/Supported-APIs.pdf
+  - type: GettingStarted
+    url: >-
+      https://www.pge.com/en/save-energy-and-money/energy-saving-programs/smartmeter/third-party-companies.html#getstarted
+  - type: SignUp
+    url: https://sharemydata.pge.com/
+  - type: Support
+    url: mailto:ShareMyData@pge.com
+  - type: TermsOfService
+    url: >-
+      https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/smd-platform-tou.pdf
+  - type: PrivacyPolicy
+    url: https://www.pge.com/en/privacy-center.html
+  - type: Blog
+    url: https://www.pge.com/en/newsroom/currents.html
   - type: GitHubOrganization
     url: https://github.com/pgetech
   - type: LinkedIn
     url: https://www.linkedin.com/company/pacificgasandelectric
-  - type: Share My Data
-    url: https://www.pge.com/en/save-energy-and-money/energy-usage-and-tips/understand-my-usage/share-my-data.html
-  - type: Website
-    url: https://www.pge.com/
+  - type: Portal
+    url: https://sharemydata.pge.com/
+  - type: Security
+    url: https://www.pge.com/en/about/company-information/vulnerability-disclosure-policy.html
+  - type: VulnerabilityDisclosure
+    url: security/pg-and-e-vulnerability-disclosure.yml
+  - type: Packages
+    url: packages/pg-and-e-packages.yml
+  - type: SDKs
+    url: packages/pg-and-e-packages.yml
+  - type: Conformance
+    url: conformance/pg-and-e-conformance.yml
+  - type: Compliance
+    url: conformance/pg-and-e-conformance.yml
+  - type: ErrorCatalog
+    url: errors/pg-and-e-problem-types.yml
+  - type: Lifecycle
+    url: lifecycle/pg-and-e-lifecycle.yml
+  - type: Conventions
+    url: conventions/pg-and-e-conventions.yml
+  - type: DataModel
+    url: data-model/pg-and-e-data-model.yml
+  - type: Sandbox
+    url: sandbox/pg-and-e-sandbox.yml
+  - type: RateLimits
+    url: rate-limits/pg-and-e-rate-limits.yml
+  - type: Plans
+    url: plans/pg-and-e-plans-pricing.yml
+  - type: FinOps
+    url: finops/pg-and-e-finops.yml
+  - type: Webhooks
+    url: asyncapi/pg-and-e-notifications.yml
+  - type: AgentSkill
+    url: skills/_index.yml
+  - type: LLMsTxt
+    url: llms/pg-and-e-llms.txt
+  - type: X-MCPServerCandidate
+    url: mcp/pg-and-e-mcp.yml
+  - type: Reference
+    url: https://www.greenbuttondata.org/
+
 description: >-
   Pacific Gas and Electric Company (PG&E) is one of the largest combined natural gas and electric energy companies in
   the United States, serving approximately 16 million people in northern and central California. PG&E offers the Share
   My Data API, a Green Button Connect My Data implementation providing customer- authorized access to energy usage
   interval data for both electricity and gas through RESTful web services.
+
+x-enrichment:
+  date: '2026-09-17'
+  status: enriched
+  artifacts_added: 18
+  pass: local-v3
