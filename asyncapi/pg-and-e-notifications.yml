@@ -1,0 +1,65 @@
+specification: API Commons Webhooks
+specificationVersion: '0.1'
+provider: pg-and-e
+providerId: pg-and-e
+generated: '2026-09-17'
+method: searched
+source: https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/Supported-APIs.pdf
+modified: '2026-09-17'
+note: >-
+  PG&E ships NO AsyncAPI document — searched /asyncapi.yaml and /asyncapi.json on every host, and
+  the third-party docs page; nothing. It DOES operate a real, standards-defined push surface: ESPI
+  function block 39 (Push model), in which PG&E POSTs a notification to a URI the third party
+  registers, and the third party then GETs the Bulk resource. This file records that webhook catalog
+  as measured, not as a generated AsyncAPI. Nothing is fabricated: PG&E publishes the direction, the
+  method and the registration requirement, but not a payload schema separate from the ESPI XSDs.
+event_surface:
+  exists: true
+  style: ESPI push notification (Green Button function block 39)
+  asyncapi_published: false
+  webhook_count: 1
+webhooks:
+  - name: ESPI Notification
+    direction: outbound (PG&E -> third party)
+    method: POST
+    endpoint: third-party-defined notification URI, registered at https://sharemydata.pge.com/
+    reference_endpoint_in_docs: https://services.greenbuttondata.org/ThirdParty/espi/1_1/Notification
+    reference_note: >-
+      The supported-API reference illustrates the notification target with the Green Button
+      Alliance reference third-party host. That host is the EXAMPLE, not PG&E's. The real target is
+      whatever URI the third party registers.
+    request_parameters: ignored
+    description: >-
+      PG&E posts a notification to the third party when authorized data is ready, after which the
+      third party retrieves the corresponding Batch/Bulk resource. Documented as "Posting
+      notification to 3rd parties (3p defined URI)".
+    function_block: FB=39 Push model
+    followed_by:
+      - GET /GreenButtonConnect/espi/1_1/resource/Batch/Bulk/{BulkID}
+      - GET /GreenButtonConnect/espi/1_1/resource/Batch/BulkRetailCustomerInfo/{BulkID}
+      - GET /GreenButtonConnect/espi/1_1/resource/Batch/BulkRetailDRPrgInfo/{BulkID}
+    payload:
+      media_type: application/atom+xml
+      schema: ESPI 1.1 Atom — see the Share My Data XSD bundle
+      schema_url: https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/SMD_XSDs.zip
+    security:
+      transport: HTTPS to the third party's registered URI
+      signature: not documented
+      note: >-
+        PG&E documents no signing scheme, no shared secret and no delivery-id for the notification.
+        A receiver cannot verify origin from the request alone and must dedupe on its own.
+    registration:
+      required: true
+      where: Share My Data registration, data access tab
+      requirement: >-
+        The third party supplies the notification URI during registration and must present a
+        CA-issued TLS 1.2 X.509 certificate for the platform generally.
+      source: https://www.pge.com/en/save-energy-and-money/energy-saving-programs/smartmeter/third-party-companies.html
+searched:
+  - url: https://api.pge.com/asyncapi.json
+    status: 404
+  - url: https://api.pge.com/asyncapi.yaml
+    status: 404
+  - url: https://www.pge.com/en/save-energy-and-money/energy-saving-programs/smartmeter/third-party-companies.html
+    status: 200
+    result: push model documented in prose and in the supported-API reference; no AsyncAPI document

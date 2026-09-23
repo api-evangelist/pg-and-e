@@ -1,0 +1,79 @@
+# Pacific Gas and Electric Company (PG&E) — Share My Data
+
+> PG&E is the investor-owned electric and natural gas utility for northern and central California.
+> Its only public API surface is Share My Data, a production Green Button Connect My Data
+> implementation of the NAESB REQ.21 ESPI 1.1 standard, serving customer-authorized energy usage
+> data from https://api.pge.com.
+
+Generated: 2026-09-17
+Method: generated (from this repository's artifacts and from PG&E's own anonymously-published documentation)
+Source: https://www.pge.com/en/save-energy-and-money/energy-saving-programs/smartmeter/third-party-companies.html
+
+## What you need to know before calling anything
+
+- There is **no OpenAPI document**. PG&E publishes its API reference as a PDF table. The only
+  machine-readable contract it ships is the ESPI / Share My Data XSD schema bundle.
+- **Mutual TLS is mandatory.** Every request to api.pge.com — including the OAuth token endpoint —
+  must present a CA-issued TLS 1.2 X.509 client certificate. Self-signed certificates are rejected.
+  Without one, every call returns HTTP 400 `"Invalid Certificate"`. No bearer token clears this.
+- **You cannot self-serve.** Access requires registration at https://sharemydata.pge.com/, a U.S.
+  EIN, eligible standing with the California Public Utilities Commission, and PG&E approval.
+- **Scopes are not scope names.** The granted scope is a single ESPI function-block string, e.g.
+  `FB=1_3_8_13_14_18_19_31_32_35_37_38_39_40_4_5_10_15_16_46_47;AdditionalScope=...;dataCustodianId=PGE`.
+- **Responses are Atom XML**, not JSON. Only the error bodies are JSON.
+- **AuthorizationID, SubscriptionID and RetailCustomerID are the same value** at the customer level.
+
+## Developer documentation
+
+- [Share My Data for third parties (developer portal)](https://www.pge.com/en/save-energy-and-money/energy-saving-programs/smartmeter/third-party-companies.html): registration prerequisites, acceptable use, all downloads.
+- [Supported APIs reference (PDF)](https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/Supported-APIs.pdf): every resource, HTTP method, token class, query parameters and function block.
+- [OAuth / ESPI authorization guide (PDF)](https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/OAuth_Authorization_ESPI.pdf)
+- [Function-block scope-string mapping (PDF)](https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/Supported-Function-Block-Scope-String-Mapping-Click-Thru-2.0.pdf)
+- [Relational data model (PDF)](https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/Supported-Relational-Data-Model.pdf)
+- [Supported data elements (PDF)](https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/Supported-Data-Elements.pdf)
+- [ESPI / Share My Data XSD bundle (ZIP)](https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/SMD_XSDs.zip)
+- [SoapUI walkthrough (PDF)](https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/soap-ui-steps.pdf)
+- [Share My Data Platform Terms of Use (PDF)](https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/smd-platform-tou.pdf)
+
+## SDKs
+
+- [JavaScript SDK (ZIP)](https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/javascriptsdk.zip) — [development guide (PDF)](https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/smd-javascript-development-guide.pdf)
+- [Python SDK (ZIP)](https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/pythonsdk.zip) — [development guide (PDF)](https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/smd-python-development-guide.pdf)
+- Neither SDK is published to npm or PyPI, and neither ZIP carries a version.
+
+## Endpoints
+
+- Production authorize: https://api.pge.com/datacustodian/oauth/v2/Authorize
+- Production token: https://api.pge.com/datacustodian/oauth/v2/token
+- Test authorize: https://api.pge.com/datacustodian/test/oauth/v2/authorize
+- Test token: https://api.pge.com/datacustodian/test/oauth/v2/token
+- Data resources: https://api.pge.com/GreenButtonConnect/espi/1_1/resource/...
+- Customer authorization UI: https://sharemydata.pge.com/
+
+## Published rate limits
+
+- 1 request per second per vendor, across all of that vendor's Client IDs
+- 2,000 API calls per hour per Client ID
+- 20,000 API calls per 24-hour period per Client ID, resetting at 5 p.m. PT
+- No RateLimit-* or Retry-After response headers are documented.
+
+## Events
+
+PG&E POSTs an ESPI Notification (Green Button function block 39) to a notification URI you register,
+after which you GET the corresponding `Batch/Bulk/{BulkID}` resource. The notification is not signed
+and carries no delivery id; you must dedupe.
+
+## What PG&E does not publish
+
+- No OpenAPI, GraphQL, gRPC or WSDL contract
+- No MCP server and no A2A agent card (all `/.well-known/` paths return 404 on every host)
+- No `/.well-known/security.txt`, `openid-configuration`, `oauth-authorization-server` or `api-catalog`
+- No developer status page, changelog, deprecation policy, SLA or CLI
+- No public pricing for API access; fees, where any apply, follow CPUC tariff
+
+## Support and policy
+
+- Share My Data support: ShareMyData@pge.com
+- Vulnerability disclosure: https://www.pge.com/en/about/company-information/vulnerability-disclosure-policy.html (report to pgecirt@pge.com)
+- Privacy: https://www.pge.com/en/privacy-center.html
+- Company: https://www.pge.com/

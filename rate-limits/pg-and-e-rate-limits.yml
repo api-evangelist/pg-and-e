@@ -3,47 +3,88 @@ specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
 provider: pg-and-e
 providerId: pg-and-e
+generated: '2026-09-17'
+method: searched
+source: https://www.pge.com/en/save-energy-and-money/energy-saving-programs/smartmeter/third-party-companies.html
 created: '2026-05-04'
-# Provenance stamped 2026-08-11: this artifact was written by the API Evangelist
-# bulk sweep dated 2026-05-04, not harvested from the provider. See roadmap#35.
-method: generated
-modified: '2026-05-05'
-reconciled: false
+modified: '2026-09-17'
+reconciled: true
 tags:
   - Rate Limiting
   - Energy
   - Utilities
   - Share My Data
   - Green Button
-notes: PG&E does not publish numeric rate limits for its Share My Data API on a public developer
-  documentation site. Limits, polling cadence, and quota are defined per third-party registration
-  in coordination with PG&E and constrained by the Green Button / CMD specification.
-description: PG&E's Share My Data API follows the Green Button / Connect My Data standard. Throttling
-  and quota are managed via the third-party registration relationship rather than published
-  numeric per-key limits. Standard 429 / 503 responses apply on throttling; consumers should
-  follow Green Button best practices for batched daily / hourly retrieval rather than
-  high-frequency polling.
+notes: >-
+  Superseded the 2026-05-04 bulk-sweep artifact, which stated that PG&E publishes no numeric limits.
+  PG&E DOES publish numeric acceptable-use thresholds, anonymously and without a login, in the
+  "Acceptable use" section of the Share My Data third-party page. The three thresholds below are
+  quoted verbatim from that page (fetched 2026-09-17, HTTP 200). PG&E does not document any
+  RateLimit-* / X-RateLimit-* response headers or a Retry-After header, and the runtime signal
+  cannot be observed anonymously because every data-access call is rejected at the TLS layer with
+  HTTP 400 "Invalid Certificate" until a registered client X.509 certificate is presented.
+description: >-
+  PG&E Share My Data is a NAESB ESPI 1.1 / Green Button Connect My Data surface on
+  https://api.pge.com. Limits are published as platform acceptable-use thresholds scoped to the
+  vendor and to each Client ID, not as per-endpoint quotas, and PG&E states they are subject to
+  change.
 sources:
-  - https://www.pge.com/en/partners-and-suppliers/data-requests-research-and-academics/share-my-data.html
-  - https://sharemydata.pge.com/
+  - url: https://www.pge.com/en/save-energy-and-money/energy-saving-programs/smartmeter/third-party-companies.html
+    status: 200
+    fetched: '2026-09-17'
+  - url: https://sharemydata.pge.com/
+    status: 200
+    fetched: '2026-09-17'
+limit_count: 3
+limits:
+  - name: Vendor request rate
+    scope: per-vendor (across all of that vendor's Client IDs)
+    metric: requests
+    window: 1 second
+    limit: 1
+    burst: null
+    quote: One request per second per vendor across all vendor Client ID's
+  - name: Hourly call ceiling
+    scope: per-client-id
+    metric: api_calls
+    window: 1 hour
+    limit: 2000
+    burst: null
+    quote: 2,000 API calls per hour per Client ID
+  - name: Daily call ceiling
+    scope: per-client-id
+    metric: api_calls
+    window: 24 hours
+    limit: 20000
+    burst: null
+    reset: 17:00 America/Los_Angeles
+    quote: >-
+      20,000 API calls per 24-hour period per Client ID. The daily threshold limit resets at
+      5 p.m. PT
+headers:
+  documented: false
+  request: []
+  response: []
+  note: >-
+    PG&E documents no rate-limit response headers (no RateLimit-*, X-RateLimit-* or Retry-After).
+    An agent cannot read remaining quota from a response and must track the published thresholds
+    itself.
 responseCodes:
   throttled: 429
   serviceUnavailable: 503
-limits:
-  - name: Share My Data API
-    scope: third-party registration
-    metric: varies
-    limit: 'governed by third-party agreement; not publicly documented'
-    notes: Daily / hourly batch retrieval is the normal pattern; high-frequency polling is not
-      expected.
+  note: >-
+    429/503 are the conventional ESPI/HTTP responses; PG&E does not state the exhaustion status
+    code on the acceptable-use page, and it could not be observed anonymously (mutual TLS gate).
 policies:
-  - name: Green Button / CMD Conformance
-    description: Clients should follow the Green Button Connect My Data conformance requirements
-      for usage retrieval (typically daily or hourly batch).
-  - name: Customer Authorization Lifecycle
-    description: Each customer's authorization is time-limited; clients must handle revocation and
-      re-authorization rather than retrying.
-  - name: Backoff
-    description: On 429 / 503, retry with exponential backoff and jitter; do not exceed normal
-      Green Button retrieval cadence.
+  - name: Acceptable use subject to change
+    description: >-
+      PG&E states on the same page that its acceptable-use conditions are subject to change.
+  - name: Green Button / CMD retrieval cadence
+    description: >-
+      Batch retrieval (daily/hourly) is the expected pattern; the Batch/Bulk resources exist
+      precisely so a third party does not poll per-customer resources.
+  - name: Customer authorization lifecycle
+    description: >-
+      Each customer authorization is time-limited and revocable; clients must handle revocation
+      and re-authorization rather than retrying.
 maintainers: []

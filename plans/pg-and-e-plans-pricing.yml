@@ -4,11 +4,28 @@ schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main
 provider: pg-and-e
 providerId: pg-and-e
 created: '2026-05-04'
-# Provenance stamped 2026-08-11: this artifact was written by the API Evangelist
-# bulk sweep dated 2026-05-04, not harvested from the provider. See roadmap#35.
-method: generated
-modified: '2026-05-05'
-reconciled: false
+generated: '2026-09-17'
+method: searched
+source: https://www.pge.com/en/save-energy-and-money/energy-saving-programs/smartmeter/third-party-companies.html
+modified: '2026-09-17'
+reconciled: true
+plan_count: 1
+searched:
+  - url: https://www.pge.com/en/save-energy-and-money/energy-saving-programs/smartmeter/third-party-companies.html
+    status: 200
+    result: registration prerequisites and acceptable-use thresholds published; no price, no tiers
+  - url: https://sharemydata.pge.com/
+    status: 200
+    result: third-party registration console; no pricing page
+  - url: https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/smd-platform-tou.pdf
+    status: 200
+    result: Share My Data Platform Terms of Use; no published fee schedule for API access
+verification_note: >-
+  Re-verified 2026-09-17 against PG&E's own pages rather than restated from the 2026-05-04 bulk
+  sweep. The finding is unchanged and is a real one: PG&E publishes a complete developer reference,
+  SDKs and numeric rate limits anonymously, but NO price and NO tiers for Share My Data. Access is
+  gated on CPUC-eligible third-party registration and customer authorization, and any fees follow
+  CPUC tariff filings rather than a public price book.
 tags:
   - Energy
   - Utilities

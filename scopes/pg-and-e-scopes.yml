@@ -1,17 +1,149 @@
-generated: '2026-07-11'
-method: derived
-source: openapi/pg-and-e-share-my-data-api-openapi.yml
+specification: API Commons OAuth Scopes
+specificationVersion: '0.1'
+provider: pg-and-e
+providerId: pg-and-e
+generated: '2026-09-17'
+method: searched
+source: https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/Supported-Function-Block-Scope-String-Mapping-Click-Thru-2.0.pdf
+docs: https://www.pge.com/en/save-energy-and-money/energy-saving-programs/smartmeter/third-party-companies.html
+modified: '2026-09-17'
+note: >-
+  Supersedes the 2026-07-11 derived artifact, which recorded a single scope "usage:read" read out of
+  the in-repo OpenAPI scaffold. PG&E does not use bare string scopes. Share My Data implements the
+  NAESB ESPI authorization profile, in which the granted scope is returned as a single compound
+  FUNCTION-BLOCK STRING. The function-block numbers and their meanings below are transcribed from
+  PG&E's own published "Supported Function Block Scope String Mapping (Click-Thru 2.0)" PDF
+  (HTTP 200, fetched 2026-09-17). An agent must parse the FB= list, not look for OAuth scope names.
 schemes:
-- name: oauth2
-  source: openapi/pg-and-e-share-my-data-api-openapi.yml
-  flows:
-  - flow: authorizationCode
-    authorizationUrl: https://api.pge.com/datacustodian/oauth/v2/authorize
+  - name: oauth2
+    type: oauth2
+    authorizationUrl: https://api.pge.com/datacustodian/oauth/v2/Authorize
     tokenUrl: https://api.pge.com/datacustodian/oauth/v2/token
+    testAuthorizationUrl: https://api.pge.com/datacustodian/test/oauth/v2/authorize
+    testTokenUrl: https://api.pge.com/datacustodian/test/oauth/v2/token
+    flows:
+      - authorization_code
+      - client_credentials
+      - refresh_token
+scope_format:
+  style: espi-function-block-string
+  example: >-
+    FB=1_3_8_13_14_18_19_31_32_35_37_38_39_40_4_5_10_15_16_46_47;AdditionalScope=Usage_Billing_Basic_Account_ProgramEnrollment;IntervalDuration=900_3600;BlockDuration=Daily;HistoryLength={3P Registered historical length};AccountCollection={count of authorized SAs};BR={ThirdPartyID};dataCustodianId=PGE
+  example_source: >-
+    https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/Supported-Function-Block-Scope-String-Mapping-Click-Thru-2.0.pdf
+  returned_in:
+    - authorization code response
+    - access token response
+    - GET /GreenButtonConnect/espi/1_1/resource/Authorization
+  parameters:
+    - name: FB
+      description: Underscore-separated list of granted ESPI Green Button function-block numbers.
+    - name: AdditionalScope
+      description: >-
+        Utility-defined authorization selections, e.g.
+        Usage_Billing_Basic_Account_ProgramEnrollment.
+    - name: IntervalDuration
+      description: Granted interval granularity in seconds, e.g. 900_3600 (15-minute and hourly).
+    - name: BlockDuration
+      description: Interval-block grouping, e.g. Daily.
+    - name: HistoryLength
+      description: Historical depth the third party registered for.
+    - name: AccountCollection
+      description: Count of service agreements the customer authorized.
+    - name: BR
+      description: The third-party identifier.
+    - name: dataCustodianId
+      description: Always PGE for this data custodian.
+scope_count: 21
 scopes:
-- scope: usage:read
-  description: Read energy usage data
-  flows:
-  - authorizationCode
-  sources:
-  - openapi/pg-and-e-share-my-data-api-openapi.yml
+  - scope: FB=1
+    name: Common
+    description: Common services. Always returned; not customer-selectable.
+    customer_selectable: false
+  - scope: FB=3
+    name: Green Button Connect My Data
+    description: Core services. Always returned; not customer-selectable.
+    customer_selectable: false
+  - scope: FB=4
+    name: Interval Metering
+    description: Interval usage data. Granted by the customer selecting Usage Info (electric or gas SAs).
+    customer_selectable: true
+  - scope: FB=5
+    name: Interval Electricity Metering
+    description: Interval electricity usage. Granted by the customer selecting Usage Info for electric SAs.
+    customer_selectable: true
+  - scope: FB=8
+    name: Forward and Reverse Metering
+    description: Delivered/consumption and received/generation. Always returned.
+    customer_selectable: false
+  - scope: FB=10
+    name: Gas data
+    description: Gas data. Granted by the customer selecting Usage or Bill Info for gas SAs.
+    customer_selectable: true
+  - scope: FB=13
+    name: Security and Privacy classes
+    description: HTTPS support. Always returned.
+    customer_selectable: false
+  - scope: FB=14
+    name: Authorization and Authentication (OAuth)
+    description: OAuth 2.0. Always returned.
+    customer_selectable: false
+  - scope: FB=15
+    name: Usage Summary
+    description: Billed total usage summary. Granted by Usage or Bill Info.
+    customer_selectable: true
+  - scope: FB=16
+    name: Usage Summary with Cost
+    description: Usage summary including dollar bill cost. Granted by Bill Info.
+    customer_selectable: true
+  - scope: FB=18
+    name: Multiple UsagePoints
+    description: Ability to authorize multiple service agreements. Always returned.
+    customer_selectable: false
+  - scope: FB=19
+    name: Partial update data
+    description: IntervalBlocks without full data sets (no UsagePoint/MeterReading). Always returned.
+    customer_selectable: false
+  - scope: FB=31
+    name: Core REST Services
+    description: Third-party access to Subscription/Authorization. Always returned.
+    customer_selectable: false
+  - scope: FB=32
+    name: Resource Level REST
+    description: >-
+      Third-party access to UsagePoints, MeterReading and collections
+      (excludes ElectricPowerQualitySummary). Always returned.
+    customer_selectable: false
+  - scope: FB=35
+    name: REST for Bulk
+    description: Supports REST requests for Bulk. Always returned.
+    customer_selectable: false
+  - scope: FB=37
+    name: Query Parameters
+    description: published-max / published-min query parameters. Always returned.
+    customer_selectable: false
+  - scope: FB=38
+    name: On Demand Requests
+    description: Request without prior notification. Always returned.
+    customer_selectable: false
+  - scope: FB=39
+    name: Push model
+    description: >-
+      POST notification that data is ready, followed by a GET from the third party.
+      Always returned. This is the webhook surface.
+    customer_selectable: false
+  - scope: FB=40
+    name: Offline Authorization to complement OAuth
+    description: Authorization performed offline (paper CISR or Ops Portal). Always returned.
+    customer_selectable: false
+  - scope: FB=46
+    name: Core RetailCustomer
+    description: >-
+      Retrieve resources for a RetailCustomer. Granted by Basic and/or Account Info and/or
+      Program Enrollment Info.
+    customer_selectable: true
+  - scope: FB=47
+    name: REST for RetailCustomer Bulk
+    description: >-
+      Retrieve resources in bulk for a RetailCustomer. Granted by Basic and/or Account Info.
+    customer_selectable: true

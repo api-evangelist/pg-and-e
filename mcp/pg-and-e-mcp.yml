@@ -1,0 +1,92 @@
+specification: API Commons MCP Server
+specificationVersion: '0.1'
+provider: pg-and-e
+providerId: pg-and-e
+generated: '2026-09-17'
+method: derived
+source: https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/Supported-APIs.pdf
+modified: '2026-09-17'
+status: candidate
+note: >-
+  PG&E ships NO MCP server. Searched pge.com, sharemydata.pge.com, github.com/pgetech (HTTP 200,
+  zero public repositories), npm and PyPI on 2026-09-17 and found nothing — no hosted endpoint, no
+  stdio package, no mention of MCP in any published document. The tools below are a DERIVED
+  CANDIDATE mapped from PG&E's own published supported-API reference, offered as what an MCP server
+  over Share My Data would expose. This record is wired into apis.yml as
+  X-MCPServerCandidate, NOT as MCPServer: PG&E must not be credited with an agent surface it does
+  not operate.
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: unknown
+  verified: searched
+searched:
+  - url: https://www.pge.com/en/save-energy-and-money/energy-saving-programs/smartmeter/third-party-companies.html
+    status: 200
+    result: no MCP server referenced
+  - url: https://github.com/pgetech
+    status: 200
+    result: organization exists, zero public repositories
+  - url: https://api.pge.com/mcp
+    status: 404
+    result: 'No listener for endpoint: /mcp'
+blocker:
+  note: >-
+    Even if a server existed, it could not be called the way MCP servers usually are. Every
+    Share My Data call requires a CA-issued client X.509 certificate at the TLS layer (HTTP 400
+    "Invalid Certificate" without one) plus a customer-scoped OAuth token. An MCP server for this
+    API has to hold the certificate, which means it must be operated by the registered third party
+    — not by PG&E and not by a generic hosted gateway.
+tool_count: 9
+tools:
+  - name: list_authorizations
+    description: List every active customer authorization granted to this third party.
+    rest: GET /GreenButtonConnect/espi/1_1/resource/Authorization
+    token: client_access_token
+    confidence: high
+  - name: get_authorization
+    description: Retrieve one customer authorization, including its granted function-block scope.
+    rest: GET /GreenButtonConnect/espi/1_1/resource/Authorization/{AuthorizationID}
+    token: client_access_token
+    confidence: high
+  - name: revoke_authorization
+    description: Cancel an individual customer authorization. Destructive — see conventions/ reversibility.
+    rest: DELETE /GreenButtonConnect/espi/1_1/resource/Authorization/{AuthorizationID}
+    token: client_access_token
+    confidence: high
+    consequence: irreversible without new customer consent
+  - name: list_usage_points
+    description: List the metering points (service agreements) under a subscription.
+    rest: GET /GreenButtonConnect/espi/1_1/resource/Subscription/{SubscriptionID}/UsagePoint
+    token: access_token
+    confidence: high
+  - name: get_meter_readings
+    description: Retrieve meter readings, and interval blocks, for a usage point over a time window.
+    rest: >-
+      GET /GreenButtonConnect/espi/1_1/resource/Subscription/{SubscriptionID}/UsagePoint/{UsagePointID}/MeterReading
+    token: access_token
+    parameters: published-min, published-max, updated-min, updated-max
+    confidence: high
+  - name: get_usage_summary
+    description: Retrieve billing-period usage totals, with cost when the customer authorized Bill Info.
+    rest: >-
+      GET /GreenButtonConnect/espi/1_1/resource/Subscription/{SubscriptionID}/UsagePoint/{UsagePointID}/UsageSummary
+    token: access_token
+    confidence: high
+  - name: get_bulk_batch
+    description: Retrieve the asynchronous bulk feed for all of this third party's authorized customers.
+    rest: GET /GreenButtonConnect/espi/1_1/resource/Batch/Bulk/{BulkID}
+    token: client_access_token
+    confidence: high
+  - name: get_retail_customer
+    description: Retrieve customer identity, account and program-enrollment information.
+    rest: GET /GreenButtonConnect/espi/1_1/resource/Batch/RetailCustomer/{RetailCustomerID}
+    token: access_token
+    confidence: high
+  - name: read_service_status
+    description: Check Share My Data platform status.
+    rest: GET /GreenButtonConnect/espi/1_1/resource/ReadServiceStatus
+    token: client_access_token
+    confidence: high

@@ -1,0 +1,107 @@
+specification: API Commons Data Model
+specificationVersion: '0.1'
+provider: pg-and-e
+providerId: pg-and-e
+generated: '2026-09-17'
+method: derived
+source: >-
+  https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/Supported-APIs.pdf
+  and https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/Supported-Relational-Data-Model.pdf
+modified: '2026-09-17'
+note: >-
+  Derived from the containment hierarchy PG&E's own published resource URLs express, cross-checked
+  against PG&E's published relational data model and supported data elements PDFs. Entity names are
+  the NAESB ESPI 1.1 standard names; nothing is invented. Attribute-level fields are NOT enumerated
+  here because PG&E publishes them as a PDF table and an XSD bundle rather than a machine-readable
+  schema — enumerating them by hand would be transcription, not measurement.
+source_documents:
+  - url: https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/Supported-Relational-Data-Model.pdf
+    status: 200
+  - url: https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/Supported-Data-Elements.pdf
+    status: 200
+  - url: https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/SMD_XSDs.zip
+    status: 200
+entity_count: 11
+entities:
+  - name: ApplicationInformation
+    path: /GreenButtonConnect/espi/1_1/resource/ApplicationInformation/{ApplicationInformationID}
+    description: The registered third-party application's own record.
+  - name: Authorization
+    path: /GreenButtonConnect/espi/1_1/resource/Authorization/{AuthorizationID}
+    description: A customer's grant to a third party, carrying the ESPI function-block scope string.
+  - name: Subscription
+    path: /GreenButtonConnect/espi/1_1/resource/Batch/Subscription/{SubscriptionID}
+    description: >-
+      The data feed created by an authorization. PG&E documents SubscriptionID, AuthorizationID and
+      RetailCustomerID as the same value at the customer level.
+  - name: RetailCustomer
+    path: /GreenButtonConnect/espi/1_1/resource/Batch/RetailCustomer/{RetailCustomerID}
+    description: Customer identity, account and program-enrollment information (SMD Phase 2).
+  - name: UsagePoint
+    path: /GreenButtonConnect/espi/1_1/resource/Subscription/{SubscriptionID}/UsagePoint/{UsagePointID}
+    description: A metering point — one electric or gas service agreement.
+  - name: MeterReading
+    path: >-
+      /GreenButtonConnect/espi/1_1/resource/Subscription/{SubscriptionID}/UsagePoint/{UsagePointID}/MeterReading
+    description: A reading series for a usage point.
+  - name: IntervalBlock
+    path: >-
+      under MeterReading — PG&E defines one interval block per day
+    description: A block of interval readings; PG&E states a block corresponds to a single day.
+  - name: UsageSummary
+    path: >-
+      /GreenButtonConnect/espi/1_1/resource/Subscription/{SubscriptionID}/UsagePoint/{UsagePointID}/UsageSummary
+    description: Billing-period usage total, and billed cost when the customer authorized Bill Info.
+  - name: ReadingType
+    path: /GreenButtonConnect/espi/1_1/resource/ReadingType/{ReadingTypeID}
+    description: Units, multipliers and commodity for a reading series.
+  - name: LocalTimeParameters
+    path: /GreenButtonConnect/espi/1_1/resource/LocalTimeParameters/{LocalTimeParametersID}
+    description: Local time offset. PG&E states it has a single LocalTimeParameter ID (PDT).
+  - name: Bulk
+    path: /GreenButtonConnect/espi/1_1/resource/Batch/Bulk/{BulkID}
+    description: >-
+      Third-party-scoped asynchronous batch of all authorized customers' data, used for daily delta
+      retrieval.
+relationships:
+  - from: Authorization
+    to: Subscription
+    type: has_one
+    via: AuthorizationID == SubscriptionID (documented by PG&E as the same value)
+  - from: RetailCustomer
+    to: Subscription
+    type: has_one
+    via: RetailCustomerID == SubscriptionID == AuthorizationID at the customer level
+  - from: Subscription
+    to: UsagePoint
+    type: has_many
+    via: path containment /Subscription/{SubscriptionID}/UsagePoint
+  - from: UsagePoint
+    to: MeterReading
+    type: has_many
+    via: path containment /UsagePoint/{UsagePointID}/MeterReading
+  - from: UsagePoint
+    to: UsageSummary
+    type: has_many
+    via: path containment /UsagePoint/{UsagePointID}/UsageSummary
+  - from: MeterReading
+    to: IntervalBlock
+    type: has_many
+    via: path containment; one block per day
+  - from: MeterReading
+    to: ReadingType
+    type: belongs_to
+    via: ReadingTypeID reference
+  - from: Bulk
+    to: Subscription
+    type: has_many
+    via: >-
+      A Bulk retrieval returns the feeds of every subscription authorized to that third party.
+  - from: ApplicationInformation
+    to: Authorization
+    type: has_many
+    via: authorizations granted to that registered application
+identifier_note: >-
+  The most load-bearing fact in this model, and the one most likely to trip an integrator: PG&E
+  documents AuthorizationID, SubscriptionID and RetailCustomerID as THE SAME VALUE at the customer
+  level. Treat them as one identifier, not three.

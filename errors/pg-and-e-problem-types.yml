@@ -1,0 +1,113 @@
+specification: API Commons Error Catalog
+specificationVersion: '0.1'
+provider: pg-and-e
+providerId: pg-and-e
+generated: '2026-09-17'
+method: probed
+source: live anonymous probes of api.pge.com, 2026-09-17
+modified: '2026-09-17'
+format: non-standard
+format_note: >-
+  PG&E serves no RFC 9457 application/problem+json. Two distinct error envelopes are in use and an
+  agent must handle both: the OAuth 2.0 error object (RFC 6749) on /datacustodian/oauth/v2/*, and a
+  BARE JSON STRING on the gateway edge (literally "Invalid Certificate", content-type
+  application/json). A client that assumes a JSON object will fail to parse the edge error.
+  Application-level ESPI errors are returned inside the ESPI Atom XML payload and could not be
+  observed anonymously because the mutual-TLS gate rejects the request first.
+envelopes:
+  - name: OAuth 2.0 error object
+    media_type: application/json
+    shape: '{"error": "<code>", "error_description": "<human text>"}'
+    applies_to: https://api.pge.com/datacustodian/oauth/v2/* and /datacustodian/test/oauth/v2/*
+  - name: Gateway string error
+    media_type: application/json
+    shape: '"<message>"'
+    applies_to: https://api.pge.com/GreenButtonConnect/* and unmatched routes
+  - name: Mulesoft route miss
+    media_type: text/plain
+    shape: 'No listener for endpoint: <path>'
+    applies_to: any unrouted path on api.pge.com
+problem_count: 6
+problems:
+  - code: invalid_request
+    status: 405
+    title: GET not permitted
+    envelope: OAuth 2.0 error object
+    detail: '{"error":"invalid_request","error_description":"GET not permitted"}'
+    remediation: POST to the token endpoint; it does not accept GET.
+    observed:
+      url: https://api.pge.com/datacustodian/oauth/v2/token
+      method: GET
+      status: 405
+      fetched: '2026-09-17'
+  - code: invalid_request
+    status: 400
+    title: Missing grant_type
+    envelope: OAuth 2.0 error object
+    detail: '{"error":"invalid_request","error_description":"Missing grant_type"}'
+    remediation: >-
+      Send grant_type=client_credentials for a third-party token, or
+      grant_type=authorization_code / refresh_token for a customer token.
+    observed:
+      url: https://api.pge.com/datacustodian/test/oauth/v2/token
+      method: GET
+      status: 400
+      fetched: '2026-09-17'
+  - code: invalid_request
+    status: 400
+    title: client_id is empty
+    envelope: OAuth 2.0 error object
+    detail: '{"error":"invalid_request","error_description":"client_id is empty"}'
+    remediation: Include the registered client_id on the authorize request.
+    observed:
+      url: https://api.pge.com/datacustodian/test/oauth/v2/authorize
+      method: GET
+      status: 400
+      fetched: '2026-09-17'
+  - code: invalid_certificate
+    status: 400
+    title: Invalid Certificate
+    envelope: Gateway string error
+    detail: '"Invalid Certificate"'
+    remediation: >-
+      Present the registered CA-issued TLS 1.2 client X.509 certificate. This is the FIRST error any
+      unregistered caller sees; it is a transport failure, not an authorization failure, and no
+      bearer token will clear it.
+    observed:
+      - url: https://api.pge.com/GreenButtonConnect/espi/1_1/resource/Authorization
+        method: GET
+        status: 400
+        fetched: '2026-09-17'
+      - url: https://api.pge.com/GreenButtonConnect/espi/1_1/resource/ReadServiceStatus
+        method: GET
+        status: 400
+        fetched: '2026-09-17'
+      - url: https://api.pge.com/datacustodian/oauth/v2/token
+        method: POST
+        status: 400
+        fetched: '2026-09-17'
+  - code: no_listener
+    status: 404
+    title: 'No listener for endpoint'
+    envelope: Mulesoft route miss
+    detail: 'No listener for endpoint: /<path>'
+    remediation: >-
+      The path is not routed on the gateway. Check it against the published supported-API reference;
+      note that the ESPI resources are prefixed /GreenButtonConnect and the OAuth endpoints are not.
+    observed:
+      url: https://api.pge.com/openapi.json
+      method: GET
+      status: 404
+      fetched: '2026-09-17'
+  - code: throttled
+    status: 429
+    title: Acceptable-use threshold exceeded
+    envelope: unobserved
+    detail: null
+    remediation: >-
+      Back off to the published thresholds — 1 request/second per vendor, 2,000 calls/hour and
+      20,000 calls/24h per Client ID (daily reset 5 p.m. PT).
+    note: >-
+      Documented behaviour by inference from the published acceptable-use thresholds; the status
+      code and body were NOT observed, because the mutual-TLS gate rejects an anonymous caller
+      first. Not asserted as measured.

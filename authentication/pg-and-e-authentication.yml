@@ -1,18 +1,104 @@
-generated: '2026-07-11'
-method: derived
-source: openapi/pg-and-e-share-my-data-api-openapi.yml
+specification: API Commons Authentication
+specificationVersion: '0.1'
+provider: pg-and-e
+providerId: pg-and-e
+generated: '2026-09-17'
+method: searched
+source: https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/OAuth_Authorization_ESPI.pdf
+docs: https://www.pge.com/en/save-energy-and-money/energy-saving-programs/smartmeter/third-party-companies.html
+modified: '2026-09-17'
+note: >-
+  Supersedes the 2026-07-11 derived artifact, which read a single authorizationCode flow out of the
+  in-repo OpenAPI scaffold and missed the two facts that actually decide whether an agent can call
+  this API: there are TWO token classes, and every call runs over MANDATORY mutual TLS with a
+  CA-issued client certificate. Both are published anonymously by PG&E and both were confirmed live
+  on 2026-09-17.
 summary:
   types:
-  - oauth2
+    - oauth2
+    - mutualTLS
   oauth2_flows:
-  - authorizationCode
+    - authorization_code
+    - client_credentials
+    - refresh_token
+  transport_auth: mutual TLS 1.2 (client X.509 certificate)
+  openid_connect: false
+  openid_connect_evidence: >-
+    /.well-known/openid-configuration returns HTTP 404 on www.pge.com, api.pge.com and
+    sharemydata.pge.com (probed 2026-09-17). This is plain OAuth 2.0, not OpenID Connect.
 schemes:
-- name: oauth2
-  type: oauth2
-  flows:
-  - flow: authorizationCode
-    authorizationUrl: https://api.pge.com/datacustodian/oauth/v2/authorize
-    tokenUrl: https://api.pge.com/datacustodian/oauth/v2/token
-    scopes: 1
-  sources:
-  - openapi/pg-and-e-share-my-data-api-openapi.yml
+  - name: mutual_tls
+    type: mutualTLS
+    required: true
+    scope: every call to api.pge.com, including the OAuth token endpoint
+    requirement: >-
+      A valid TLS 1.2 X.509 certificate issued by a recognized SSL provider. PG&E states
+      "Self-signed certificates are not accepted and submission of a self-signed SSL certificate
+      will delay the approval of your registration."
+    evidence:
+      - url: https://api.pge.com/GreenButtonConnect/espi/1_1/resource/Authorization
+        status: 400
+        body: '"Invalid Certificate"'
+        fetched: '2026-09-17'
+      - url: https://api.pge.com/GreenButtonConnect/espi/1_1/resource/ReadServiceStatus
+        status: 400
+        body: '"Invalid Certificate"'
+        fetched: '2026-09-17'
+    source: https://www.pge.com/en/save-energy-and-money/energy-saving-programs/smartmeter/third-party-companies.html
+  - name: oauth2
+    type: oauth2
+    flows:
+      - flow: client_credentials
+        tokenUrl: https://api.pge.com/datacustodian/oauth/v2/token
+        token_class: client_access_token
+        description: >-
+          Third-party-level token. Used for the third party's own resources — ApplicationInformation,
+          the Authorization feed, ReadServiceStatus, and every Bulk resource
+          (Batch/Bulk/{BulkID}, Batch/BulkRetailCustomerInfo/{BulkID},
+          Batch/BulkRetailDRPrgInfo/{BulkID}).
+      - flow: authorization_code
+        authorizationUrl: https://api.pge.com/datacustodian/oauth/v2/Authorize
+        tokenUrl: https://api.pge.com/datacustodian/oauth/v2/token
+        token_class: access_token
+        description: >-
+          Per-customer token, issued after a PG&E customer authenticates on PG&E's own site and
+          chooses what to share. Used for every customer-scoped resource under
+          Subscription/{SubscriptionID}/... . Paired with a refresh token.
+      - flow: refresh_token
+        tokenUrl: https://api.pge.com/datacustodian/oauth/v2/token
+        description: Refreshes the per-customer access token.
+    scope_format: ESPI function-block string — see scopes/pg-and-e-scopes.yml
+    revocation:
+      operation: DELETE /GreenButtonConnect/espi/1_1/resource/Authorization/{AuthorizationID}
+      token: client_access_token
+      description: Cancels an individual customer authorization.
+    evidence:
+      - url: https://api.pge.com/datacustodian/oauth/v2/token
+        method: GET
+        status: 405
+        body: '{"error":"invalid_request","error_description":"GET not permitted"}'
+        fetched: '2026-09-17'
+      - url: https://api.pge.com/datacustodian/test/oauth/v2/token
+        method: GET
+        status: 400
+        body: '{"error":"invalid_request","error_description":"Missing grant_type"}'
+        fetched: '2026-09-17'
+      - url: https://api.pge.com/datacustodian/test/oauth/v2/authorize
+        method: GET
+        status: 400
+        body: '{"error":"invalid_request","error_description":"client_id is empty"}'
+        fetched: '2026-09-17'
+    sources:
+      - https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/OAuth_Authorization_ESPI.pdf
+      - https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/Supported-APIs.pdf
+onboarding:
+  self_serve: false
+  gate: application approval by PG&E under the CPUC framework
+  registration_url: https://sharemydata.pge.com/
+  prerequisites:
+    - A 9-digit U.S. Employer Identification Number (EIN)
+    - Business and technical contacts
+    - A third-party notification URI for the ESPI push (FB 39) model
+    - A CA-issued TLS 1.2 X.509 certificate (self-signed rejected)
+  source: https://www.pge.com/en/save-energy-and-money/energy-saving-programs/smartmeter/third-party-companies.html
+support: mailto:ShareMyData@pge.com

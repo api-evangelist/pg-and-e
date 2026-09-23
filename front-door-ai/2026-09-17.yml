@@ -1,0 +1,25 @@
+# Front Door AI Index — pg-and-e — 2026-09-17
+# AI vocabulary counted on the provider's root page. Generated; do not edit.
+# `score` is null unless ownership is `own` — see front_door_ai.py.
+front_door_ai:
+  slug: pg-and-e
+  lexicon_version: '1.0'
+  probed_at: '2026-09-17'
+  host: www.pge.com
+  final_host: www.pge.com
+  ownership: shared
+  owner: pge
+  shares_host_with:
+  - pge
+  inherited_from: null
+  verdict: silent
+  score: null
+  host_score: 0
+  density: null
+  words: 686
+  tiers:
+    agentic: 0
+    core: 0
+    model: 0
+  ambiguous: 0
+  top_terms: null

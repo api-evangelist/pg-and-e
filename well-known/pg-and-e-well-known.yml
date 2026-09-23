@@ -1,0 +1,125 @@
+specification: API Commons Well-Known
+specificationVersion: '0.1'
+provider: pg-and-e
+providerId: pg-and-e
+generated: '2026-09-17'
+method: probed
+source: direct HTTP probe of each host
+modified: '2026-09-17'
+note: >-
+  Every named /.well-known/ path was probed on every host this record knows — the registrable domain
+  and www, the API base host from apis.yml and from every OpenAPI servers[] block, and the
+  third-party console host. NOT ONE returned a document. www.pge.com and sharemydata.pge.com answer
+  404 with a full HTML page (the site 404 template, ~115 KB and ~7.7 KB respectively), and
+  api.pge.com answers 404 text/plain "No listener for endpoint: <path>" from the Mulesoft gateway.
+  pge.com 301s to www.pge.com. No WellKnown or SecurityTxt pointer is emitted: this file records a
+  measured ABSENCE, not a presence. PG&E does publish a vulnerability disclosure policy, but as an
+  HTML page rather than an RFC 9116 security.txt — see security/pg-and-e-vulnerability-disclosure.yml.
+hit_count: 0
+hosts:
+  - host: www.pge.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+        file: null
+      - path: /.well-known/openid-configuration
+        status: 404
+        file: null
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+        file: null
+      - path: /.well-known/api-catalog
+        status: 404
+        file: null
+      - path: /.well-known/ai-plugin.json
+        status: 404
+        file: null
+      - path: /.well-known/agent-card.json
+        status: 404
+        file: null
+      - path: /.well-known/agent.json
+        status: 404
+        file: null
+      - path: /llms.txt
+        status: 404
+        file: null
+  - host: pge.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 301
+        file: null
+        note: redirects to www.pge.com, which 404s
+      - path: /.well-known/openid-configuration
+        status: 301
+        file: null
+      - path: /.well-known/oauth-authorization-server
+        status: 301
+        file: null
+      - path: /.well-known/api-catalog
+        status: 301
+        file: null
+      - path: /.well-known/ai-plugin.json
+        status: 301
+        file: null
+      - path: /.well-known/agent-card.json
+        status: 301
+        file: null
+      - path: /.well-known/agent.json
+        status: 301
+        file: null
+      - path: /llms.txt
+        status: 301
+        file: null
+  - host: api.pge.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+        file: null
+      - path: /.well-known/openid-configuration
+        status: 404
+        file: null
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+        file: null
+      - path: /.well-known/api-catalog
+        status: 404
+        file: null
+      - path: /.well-known/ai-plugin.json
+        status: 404
+        file: null
+      - path: /.well-known/agent-card.json
+        status: 404
+        file: null
+      - path: /.well-known/agent.json
+        status: 404
+        file: null
+      - path: /llms.txt
+        status: 404
+        file: null
+  - host: sharemydata.pge.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+        file: null
+      - path: /.well-known/openid-configuration
+        status: 404
+        file: null
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+        file: null
+      - path: /.well-known/api-catalog
+        status: 404
+        file: null
+      - path: /.well-known/ai-plugin.json
+        status: 404
+        file: null
+      - path: /.well-known/agent-card.json
+        status: 404
+        file: null
+      - path: /.well-known/agent.json
+        status: 404
+        file: null
+      - path: /llms.txt
+        status: 404
+        file: null
+checked: '2026-09-17'

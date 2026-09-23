@@ -1,0 +1,60 @@
+specification: API Commons Lifecycle
+specificationVersion: '0.1'
+provider: pg-and-e
+providerId: pg-and-e
+generated: '2026-09-17'
+method: searched
+source: https://www.pge.com/en/save-energy-and-money/energy-saving-programs/smartmeter/third-party-companies.html
+modified: '2026-09-17'
+versioning:
+  scheme: path segment, inherited from the ESPI standard
+  current: espi/1_1
+  example: https://api.pge.com/GreenButtonConnect/espi/1_1/resource/Authorization
+  note: >-
+    The version in the path is the NAESB ESPI standard version (1.1), not a PG&E product version.
+    PG&E ships no independent API version number and no version header. Its own phasing language
+    (SMD Ph1 / SMD Ph2 in the supported-API reference) marks which release added a resource, but is
+    not addressable.
+  oauth_path: /datacustodian/oauth/v2/ (production) and /datacustodian/test/oauth/v2/ (test)
+deprecation:
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  deprecated_operations: []
+  note: >-
+    No deprecation or sunset policy is published, and no RFC 8594 Sunset/Deprecation header is
+    documented. The supported-API reference carries one row flagged "TBD?" for the authorization
+    revocation function block, which is the closest thing to a change signal PG&E publishes.
+  searched:
+    - url: https://www.pge.com/en/save-energy-and-money/energy-saving-programs/smartmeter/third-party-companies.html
+      status: 200
+      result: no deprecation policy section
+status_page:
+  published: false
+  note: >-
+    There is no developer status page for the Share My Data platform. api.pge.com exposes a
+    ReadServiceStatus RESOURCE
+    (/GreenButtonConnect/espi/1_1/resource/ReadServiceStatus) which returns a status XML document,
+    but it sits BEHIND the mutual-TLS gate (HTTP 400 "Invalid Certificate" anonymously), so an
+    unregistered party — or an agent — cannot check whether the platform is up. PG&E's public-facing
+    outage pages are electricity-service outage maps for customers, not API availability.
+  probed:
+    - url: https://status.pge.com/
+      status: 000
+      result: DNS/connection failure — host does not resolve
+    - url: https://api.pge.com/GreenButtonConnect/espi/1_1/resource/ReadServiceStatus
+      status: 400
+      result: '"Invalid Certificate" — gated'
+sla:
+  published: false
+  note: >-
+    No availability or latency SLA is published. Obligations run through the CPUC-filed Customer
+    Data Access Tariff and the Share My Data Platform Terms of Use rather than a developer SLA.
+  terms: https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/smd-platform-tou.pdf
+change_communication:
+  changelog_published: false
+  channel: >-
+    PG&E states that acceptable-use conditions are subject to change and directs questions to
+    ShareMyData@pge.com. Material platform changes reach third parties through the registration
+    relationship, not a public dated changelog.
+  contact: mailto:ShareMyData@pge.com

@@ -1,0 +1,65 @@
+specification: API Commons Packages
+specificationVersion: '0.1'
+provider: pg-and-e
+providerId: pg-and-e
+generated: '2026-09-17'
+method: searched
+source: https://www.pge.com/en/save-energy-and-money/energy-saving-programs/smartmeter/third-party-companies.html
+modified: '2026-09-17'
+note: >-
+  PG&E ships two FIRST-PARTY Share My Data SDKs, but distributes neither through a package registry.
+  Both are unversioned ZIP downloads from pge.com with a matching PDF development guide. Searched
+  npm (registry.npmjs.org search for pge / greenbutton / green-button / espi), PyPI, and the
+  github.com/pgetech organization on 2026-09-17: no first-party PG&E package exists on any registry,
+  and github.com/pgetech (HTTP 200) publishes zero public repositories. Because the ZIPs carry no
+  version in the filename, no registry metadata endpoint, and no CDN JSON API, `version` and
+  `published` are recorded as null — checked, nothing to record. A consumer cannot tell which build
+  of these SDKs they are downloading either; that is the finding.
+package_count: 2
+packages:
+  - name: Share My Data JavaScript SDK
+    language: javascript
+    official: true
+    registry: download
+    url: https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/javascriptsdk.zip
+    http_status: 200
+    size_bytes: 1816016
+    version: null
+    published: null
+    version_note: >-
+      Unversioned ZIP served from pge.com with no registry entry, no pinned filename and no
+      Last-Modified-derived release record. Version is unknowable to a consumer.
+    docs: https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/smd-javascript-development-guide.pdf
+    fetched: '2026-09-17'
+  - name: Share My Data Python SDK
+    language: python
+    official: true
+    registry: download
+    url: https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/pythonsdk.zip
+    http_status: 200
+    size_bytes: 5233
+    version: null
+    published: null
+    version_note: >-
+      Unversioned ZIP served from pge.com with no PyPI entry. At 5 KB it is a sample/starter, not a
+      full client library.
+    docs: https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/smd-python-development-guide.pdf
+    fetched: '2026-09-17'
+third_party:
+  note: >-
+    Recorded for completeness only; NOT counted in package_count and NOT official.
+  packages:
+    - name: pgesmd-self-access
+      language: python
+      official: false
+      registry: pypi
+      url: https://pypi.org/project/pgesmd-self-access/
+      http_status: 200
+      source_repo: https://github.com/JPHutchins/pgesmd_self_access
+      note: Community Python module for Share My Data Self Access users. Not published by PG&E.
+related_schemas:
+  - name: Share My Data / ESPI XSD schema bundle
+    url: https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/SMD_XSDs.zip
+    http_status: 200
+    size_bytes: 50187
+    note: First-party XSDs. Not a client library, but the only machine-readable contract PG&E ships.

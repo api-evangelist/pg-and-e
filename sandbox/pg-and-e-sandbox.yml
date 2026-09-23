@@ -1,0 +1,84 @@
+specification: API Commons Sandbox
+specificationVersion: '0.1'
+provider: pg-and-e
+providerId: pg-and-e
+generated: '2026-09-17'
+method: searched
+source: https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/Supported-APIs.pdf
+modified: '2026-09-17'
+note: >-
+  PG&E runs a real, separately-addressed TEST environment that answers anonymously. It is not a
+  self-serve playground: it is the connectivity-and-OAuth test bed a registering third party must
+  pass before production approval. The test endpoints below were confirmed live on 2026-09-17 and
+  return real RFC 6749 errors to an anonymous caller, which is unusual and genuinely useful — a
+  developer can validate request shape before holding a certificate.
+sandbox:
+  available: true
+  self_serve: false
+  gate: >-
+    Full use requires a registered client_id and the CA-issued client certificate; the endpoints
+    themselves answer anonymously with parameter-validation errors.
+  environments:
+    - name: test
+      authorization_url: https://api.pge.com/datacustodian/test/oauth/v2/authorize
+      token_url: https://api.pge.com/datacustodian/test/oauth/v2/token
+      evidence:
+        - url: https://api.pge.com/datacustodian/test/oauth/v2/authorize
+          status: 400
+          body: '{"error":"invalid_request","error_description":"client_id is empty"}'
+          fetched: '2026-09-17'
+        - url: https://api.pge.com/datacustodian/test/oauth/v2/token
+          status: 400
+          body: '{"error":"invalid_request","error_description":"Missing grant_type"}'
+          fetched: '2026-09-17'
+    - name: production
+      authorization_url: https://api.pge.com/datacustodian/oauth/v2/Authorize
+      token_url: https://api.pge.com/datacustodian/oauth/v2/token
+fixtures:
+  - name: DownloadSampleData
+    url: https://api.pge.com/GreenButtonConnect/espi/1_1/resource/DownloadSampleData
+    method: GET
+    description: >-
+      PG&E's published sample-data interface, used for the PG&E connectivity test. Returns Green
+      Button sample data. Request parameters are ignored.
+    gated: true
+    gate_evidence:
+      status: 400
+      body: '"Invalid Certificate"'
+      fetched: '2026-09-17'
+    source: https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/Supported-APIs.pdf
+  - name: ReadServiceStatus
+    url: https://api.pge.com/GreenButtonConnect/espi/1_1/resource/ReadServiceStatus
+    method: GET
+    description: Server status check, returns status XML. Used during connectivity testing.
+    gated: true
+    gate_evidence:
+      status: 400
+      body: '"Invalid Certificate"'
+      fetched: '2026-09-17'
+tooling:
+  - name: SoapUI walkthrough
+    url: https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/soap-ui-steps.pdf
+    http_status: 200
+    description: Step-by-step guide to exercising the Share My Data API from SoapUI.
+  - name: Share My Data JavaScript SDK + development guide
+    url: https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/javascriptsdk.zip
+    http_status: 200
+  - name: Share My Data Python SDK + development guide
+    url: https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/pythonsdk.zip
+    http_status: 200
+  - name: ESPI / Share My Data XSD bundle
+    url: https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/SMD_XSDs.zip
+    http_status: 200
+external_tooling:
+  - name: Green Button API Sandbox
+    url: https://green-button.github.io/developers/sandbox/
+    first_party: false
+    note: >-
+      Linked from PG&E's third-party page as a recommended sandbox, but operated by the Green Button
+      community, not PG&E.
+test_credentials:
+  published: false
+  note: >-
+    No test API keys, test client IDs or magic identifiers are published. Test credentials are
+    issued to a third party as part of registration. NOTHING IS INVENTED HERE.

@@ -1,0 +1,124 @@
+specification: API Commons Conventions
+specificationVersion: '0.1'
+provider: pg-and-e
+providerId: pg-and-e
+generated: '2026-09-17'
+method: searched
+source: https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/Supported-APIs.pdf
+modified: '2026-09-17'
+note: >-
+  Cross-cutting runtime semantics for the PG&E Share My Data (ESPI 1.1) surface, read from PG&E's
+  published supported-API reference and function-block mapping and confirmed against live anonymous
+  probes. Share My Data is very close to a READ-ONLY API: of the ~22 documented operations, all but
+  one are GET. That single fact drives the idempotency, reversibility and dry-run verdicts below.
+auth:
+  style: OAuth 2.0 bearer token over mandatory mutual TLS 1.2
+  token_classes:
+    - client_access_token (client_credentials — third-party-level and Bulk resources)
+    - access_token (authorization_code — per-customer resources)
+  detail: authentication/pg-and-e-authentication.yml
+  scopes: scopes/pg-and-e-scopes.yml
+media_type:
+  request: n/a (GET only, apart from the notification POST PG&E sends)
+  response: application/atom+xml — ESPI 1.1 Atom feeds and entries
+  json: false
+  note: >-
+    There is no JSON representation of the data. Responses are ESPI Atom XML validated against
+    PG&E's published XSDs. Only the OAuth and gateway ERROR bodies are JSON.
+pagination:
+  style: none documented
+  note: >-
+    ESPI returns Atom feeds without documented page/cursor parameters. Volume is bounded instead by
+    the time-window query parameters and by the Bulk resources.
+filtering:
+  style: published/updated time-window query parameters
+  parameters:
+    - name: published-min
+      description: Earliest publication date (Zulu).
+    - name: published-max
+      description: Latest publication date (Zulu).
+    - name: updated-min
+      description: Earliest update date (Zulu).
+    - name: updated-max
+      description: Latest update date (Zulu).
+  note: >-
+    Function block 37 (Query Parameters) is always granted, so these are available on every
+    authorization. Many resources are documented as "(request parameters ignored)".
+async:
+  supported: true
+  style: >-
+    The Batch/Bulk resources are documented as ASYNCHRONOUS. PG&E POSTs an ESPI Notification to the
+    third party's registered notification URI when data is ready (function block 39, push model);
+    the third party then GETs the Bulk resource. See asyncapi/pg-and-e-notifications.yml.
+versioning:
+  detail: lifecycle/pg-and-e-lifecycle.yml
+  scheme: ESPI standard version in the path (espi/1_1)
+error_envelope:
+  detail: errors/pg-and-e-problem-types.yml
+  rfc9457: false
+  shapes:
+    - OAuth 2.0 error object on /datacustodian/oauth/v2/*
+    - bare JSON string (e.g. "Invalid Certificate") at the gateway edge
+    - text/plain 'No listener for endpoint: <path>' on unrouted paths
+rate_limit_signaling:
+  detail: rate-limits/pg-and-e-rate-limits.yml
+  headers_documented: false
+  published_thresholds:
+    - 1 request/second per vendor across all Client IDs
+    - 2,000 calls/hour per Client ID
+    - 20,000 calls/24h per Client ID, resetting 5 p.m. PT
+  note: >-
+    No RateLimit-* or Retry-After header is documented, so an agent has no runtime signal and must
+    enforce the published numbers client-side.
+request_id_tracing:
+  supported: false
+  note: No correlation/request-id header is documented.
+idempotency:
+  coverage: none
+  mechanism: none
+  header: null
+  scope: []
+  note: >-
+    No Idempotency-Key header or equivalent replay protection is documented anywhere in PG&E's
+    published material. The exposure is small but real: the surface is GET-only except for
+    DELETE /GreenButtonConnect/espi/1_1/resource/Authorization/{AuthorizationID}, which is naturally
+    idempotent (deleting an already-deleted authorization changes nothing), and the inbound ESPI
+    Notification POST that PG&E sends to the third party — where the THIRD PARTY, not PG&E, must
+    dedupe, because PG&E documents no notification id or delivery-once guarantee.
+dry_run_mode:
+  supported: true
+  grade: verified
+  mechanism: >-
+    A separately addressed test environment (/datacustodian/test/oauth/v2/) plus the
+    DownloadSampleData and ReadServiceStatus connectivity resources, all documented by PG&E and
+    required to be exercised before production approval.
+  detail: sandbox/pg-and-e-sandbox.yml
+reversibility:
+  applicable: true
+  grade: documented
+  note: >-
+    The API has exactly ONE write operation, and it has a documented reversal path — but the
+    reversal is a customer action, not an API call, and PG&E publishes no time window for it. Grade
+    is `documented`, not `verified`, for that reason. NO WINDOW IS ASSERTED HERE BECAUSE PG&E STATES
+    NONE.
+  write_surfaces:
+    - operation: DELETE /GreenButtonConnect/espi/1_1/resource/Authorization/{AuthorizationID}
+      description: Cancels an individual customer authorization.
+      token: client_access_token
+      reversal:
+        exists: true
+        operation: null
+        mechanism: >-
+          There is no API call that re-creates a cancelled authorization. The customer must grant a
+          new authorization through the OAuth authorization_code flow at
+          https://sharemydata.pge.com/, producing a NEW AuthorizationID. The old one does not come
+          back.
+        window: null
+        window_documented: false
+        consequence: >-
+          Destructive from the third party's perspective — data access stops immediately and
+          recovery requires re-consent from a human customer. An agent should treat this as
+          irreversible without customer involvement.
+      source: https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/Supported-APIs.pdf
+  read_only_note: >-
+    Every other documented operation is a GET and carries no reversibility question.

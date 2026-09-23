@@ -1,9 +1,7 @@
 {
   "provider": "pg-and-e",
   "sources": [
-    "pg-and-e-authorization-api-openapi.yml",
-    "pg-and-e-subscriptions-api-openapi.yml",
-    "pg-and-e-usage-api-openapi.yml"
+    "_original/pg-and-e-share-my-data-api-openapi.yml"
   ],
   "outputs": [
     "pg-and-e-authorization-api-openapi.yml",
@@ -14,10 +12,13 @@
   "errors": [],
   "warnings": [],
   "notes": [
-    "pg-and-e-authorization-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "pg-and-e-subscriptions-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "pg-and-e-usage-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "pg-and-e-share-my-data-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
     "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "pg-and-e-authorization-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pg-and-e-subscriptions-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pg-and-e-usage-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

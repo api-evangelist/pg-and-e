@@ -1,0 +1,26 @@
+specification: Agent Skills Index
+specificationVersion: '0.1'
+provider: pg-and-e
+providerId: pg-and-e
+generated: '2026-09-17'
+method: generated
+source: >-
+  https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/Supported-APIs.pdf
+note: >-
+  Two packaged Agent Skills for the PG&E Share My Data surface. Operations are quoted from PG&E's
+  published supported-API reference, not from the in-repo OpenAPI scaffold, because that scaffold
+  covers 5 of the ~22 documented resources and includes at least one path PG&E does not document.
+  Searched pge.com and github.com/pgetech for provider-published skills or an AGENTS.md on
+  2026-09-17: none exist.
+skill_count: 2
+skills:
+  - name: pg-and-e-onboard-and-authorize
+    file: skills/pg-and-e-onboard-and-authorize.md
+    summary: >-
+      Registration prerequisites, mutual TLS, the two OAuth token classes, parsing the ESPI
+      function-block scope string, and the one-way nature of authorization revocation.
+  - name: pg-and-e-retrieve-usage-data
+    file: skills/pg-and-e-retrieve-usage-data.md
+    summary: >-
+      Reading usage points, meter readings, interval blocks and usage summaries; time-window query
+      parameters; and the asynchronous notification + bulk path for many customers.

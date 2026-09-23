@@ -1,0 +1,82 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for PG&E Share My Data — usage-api
+  version: '1.0.0'
+extends: ../openapi/pg-and-e-usage-api-openapi.yml
+x-provenance:
+  generated: '2026-09-17'
+  method: generated
+  source: >-
+    https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/Supported-APIs.pdf
+  note: >-
+    PG&E publishes no OpenAPI. This overlay carries API Evangelist's enhancements on top of the
+    in-repo spec and does NOT mutate it. Every value below is quoted or measured from PG&E's own
+    anonymously-published material or from a live probe dated 2026-09-17.
+    IMPORTANT: the underlying openapi/ document is a 5-operation scaffold that predates this
+    enrichment round and does not match PG&E's published 22-resource reference. This overlay adds
+    the runtime facts an agent needs; it does not repair the operation set, because authoring
+    operations from a PDF would be fabrication.
+actions:
+  - target: $.info
+    update:
+      x-contract-source: >-
+        https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/Supported-APIs.pdf
+      x-machine-readable-contract: >-
+        ESPI / Share My Data XSD bundle only —
+        https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/SMD_XSDs.zip
+      x-standard: NAESB REQ.21 ESPI 1.1 / Green Button Connect My Data
+      x-response-media-type: application/atom+xml
+      contact:
+        name: PG&E Share My Data
+        email: ShareMyData@pge.com
+        url: https://www.pge.com/en/save-energy-and-money/energy-saving-programs/smartmeter/third-party-companies.html
+      termsOfService: >-
+        https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/smd-platform-tou.pdf
+  - target: $
+    update:
+      externalDocs:
+        description: Share My Data for third parties
+        url: https://www.pge.com/en/save-energy-and-money/energy-saving-programs/smartmeter/third-party-companies.html
+      x-transport-security:
+        mutual_tls: required
+        tls_version: '1.2'
+        certificate: CA-issued X.509; self-signed rejected
+        failure:
+          status: 400
+          body: '"Invalid Certificate"'
+          observed: '2026-09-17'
+      x-rate-limits:
+        - scope: per-vendor
+          window: 1 second
+          limit: 1
+        - scope: per-client-id
+          window: 1 hour
+          limit: 2000
+        - scope: per-client-id
+          window: 24 hours
+          limit: 20000
+          reset: 17:00 America/Los_Angeles
+      x-rate-limit-headers-documented: false
+      x-onboarding:
+        self_serve: false
+        registration: https://sharemydata.pge.com/
+        requires:
+          - U.S. Employer Identification Number
+          - eligible standing with the California Public Utilities Commission
+          - CA-issued TLS 1.2 X.509 client certificate
+          - third-party notification URI
+  - target: $.components.securitySchemes.oauth2
+    update:
+      description: >-
+        Two token classes are issued separately. client_credentials yields a client_access_token for
+        third-party-level and Bulk resources; authorization_code yields a per-customer access_token
+        (with refresh token) for Subscription-scoped resources. The granted scope is an ESPI
+        function-block string, not a list of named scopes — see the published function-block
+        mapping. The scope value 'usage:read' present in the underlying document is NOT a PG&E
+        scope; PG&E does not use bare string scopes.
+      x-scope-format: espi-function-block-string
+      x-scope-reference: >-
+        https://www.pge.com/assets/pge/docs/save-energy-and-money/energy-savings-programs/Supported-Function-Block-Scope-String-Mapping-Click-Thru-2.0.pdf
+      x-test-endpoints:
+        authorizationUrl: https://api.pge.com/datacustodian/test/oauth/v2/authorize
+        tokenUrl: https://api.pge.com/datacustodian/test/oauth/v2/token
